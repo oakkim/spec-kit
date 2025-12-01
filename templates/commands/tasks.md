@@ -1,140 +1,140 @@
 ---
-description: Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts.
-handoffs: 
-  - label: Analyze For Consistency
+description: 사용 가능한 설계 아티팩트를 기반으로 기능에 대한 실행 가능하고 의존성이 정렬된 tasks.md를 생성합니다.
+handoffs:
+  - label: 일관성 분석
     agent: speckit.analyze
-    prompt: Run a project analysis for consistency
+    prompt: 일관성을 위한 프로젝트 분석을 실행합니다
     send: true
-  - label: Implement Project
+  - label: 프로젝트 구현
     agent: speckit.implement
-    prompt: Start the implementation in phases
+    prompt: 단계별로 구현을 시작합니다
     send: true
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json
   ps: scripts/powershell/check-prerequisites.ps1 -Json
 ---
 
-## User Input
+## 사용자 입력
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** consider the user input before proceeding (if not empty).
+진행하기 전에 사용자 입력을 **반드시** 고려해야 합니다(비어있지 않은 경우).
 
-## Outline
+## 개요
 
-1. **Setup**: Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. **설정**: 저장소 루트에서 `{SCRIPT}`를 실행하고 FEATURE_DIR 및 AVAILABLE_DOCS 목록을 파싱합니다. 모든 경로는 절대 경로여야 합니다. "I'm Groot"와 같이 인수에 작은따옴표가 있는 경우 이스케이프 구문 사용: 예: 'I'\''m Groot' (또는 가능한 경우 큰따옴표: "I'm Groot").
 
-2. **Load design documents**: Read from FEATURE_DIR:
-   - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
-   - **Optional**: data-model.md (entities), contracts/ (API endpoints), research.md (decisions), quickstart.md (test scenarios)
-   - Note: Not all projects have all documents. Generate tasks based on what's available.
+2. **설계 문서 로드**: FEATURE_DIR에서 읽기:
+   - **필수**: plan.md (기술 스택, 라이브러리, 구조), spec.md (우선순위가 있는 사용자 스토리)
+   - **선택적**: data-model.md (엔티티), contracts/ (API 엔드포인트), research.md (결정사항), quickstart.md (테스트 시나리오)
+   - 참고: 모든 프로젝트에 모든 문서가 있는 것은 아닙니다. 사용 가능한 것을 기반으로 작업을 생성합니다.
 
-3. **Execute task generation workflow**:
-   - Load plan.md and extract tech stack, libraries, project structure
-   - Load spec.md and extract user stories with their priorities (P1, P2, P3, etc.)
-   - If data-model.md exists: Extract entities and map to user stories
-   - If contracts/ exists: Map endpoints to user stories
-   - If research.md exists: Extract decisions for setup tasks
-   - Generate tasks organized by user story (see Task Generation Rules below)
-   - Generate dependency graph showing user story completion order
-   - Create parallel execution examples per user story
-   - Validate task completeness (each user story has all needed tasks, independently testable)
+3. **작업 생성 워크플로우 실행**:
+   - plan.md를 로드하고 기술 스택, 라이브러리, 프로젝트 구조를 추출합니다
+   - spec.md를 로드하고 우선순위(P1, P2, P3 등)가 있는 사용자 스토리를 추출합니다
+   - data-model.md가 존재하는 경우: 엔티티를 추출하고 사용자 스토리에 매핑합니다
+   - contracts/가 존재하는 경우: 엔드포인트를 사용자 스토리에 매핑합니다
+   - research.md가 존재하는 경우: 설정 작업에 대한 결정사항을 추출합니다
+   - 사용자 스토리별로 구성된 작업을 생성합니다 (아래 작업 생성 규칙 참조)
+   - 사용자 스토리 완료 순서를 보여주는 의존성 그래프를 생성합니다
+   - 사용자 스토리별 병렬 실행 예시를 생성합니다
+   - 작업 완전성을 검증합니다 (각 사용자 스토리에 필요한 모든 작업이 있고 독립적으로 테스트 가능)
 
-4. **Generate tasks.md**: Use `.specify/templates/tasks-template.md` as structure, fill with:
-   - Correct feature name from plan.md
-   - Phase 1: Setup tasks (project initialization)
-   - Phase 2: Foundational tasks (blocking prerequisites for all user stories)
-   - Phase 3+: One phase per user story (in priority order from spec.md)
-   - Each phase includes: story goal, independent test criteria, tests (if requested), implementation tasks
-   - Final Phase: Polish & cross-cutting concerns
-   - All tasks must follow the strict checklist format (see Task Generation Rules below)
-   - Clear file paths for each task
-   - Dependencies section showing story completion order
-   - Parallel execution examples per story
-   - Implementation strategy section (MVP first, incremental delivery)
+4. **tasks.md 생성**: `.specify/templates/tasks-template.md`를 구조로 사용하여 다음을 채웁니다:
+   - plan.md에서 가져온 정확한 기능 이름
+   - Phase 1: 설정 작업 (프로젝트 초기화)
+   - Phase 2: 기초 작업 (모든 사용자 스토리에 대한 차단 전제조건)
+   - Phase 3+: 사용자 스토리당 하나의 단계 (spec.md의 우선순위 순서)
+   - 각 단계는 다음을 포함합니다: 스토리 목표, 독립적인 테스트 기준, 테스트 (요청된 경우), 구현 작업
+   - 최종 단계: 개선 및 교차 관심사
+   - 모든 작업은 엄격한 체크리스트 형식을 따라야 합니다 (아래 작업 생성 규칙 참조)
+   - 각 작업에 대한 명확한 파일 경로
+   - 스토리 완료 순서를 보여주는 의존성 섹션
+   - 스토리별 병렬 실행 예시
+   - 구현 전략 섹션 (MVP 우선, 점진적 전달)
 
-5. **Report**: Output path to generated tasks.md and summary:
-   - Total task count
-   - Task count per user story
-   - Parallel opportunities identified
-   - Independent test criteria for each story
-   - Suggested MVP scope (typically just User Story 1)
-   - Format validation: Confirm ALL tasks follow the checklist format (checkbox, ID, labels, file paths)
+5. **보고서**: 생성된 tasks.md의 경로와 요약을 출력합니다:
+   - 총 작업 개수
+   - 사용자 스토리당 작업 개수
+   - 식별된 병렬 실행 기회
+   - 각 스토리에 대한 독립적인 테스트 기준
+   - 제안된 MVP 범위 (일반적으로 사용자 스토리 1만)
+   - 형식 검증: 모든 작업이 체크리스트 형식을 따르는지 확인 (체크박스, ID, 레이블, 파일 경로)
 
-Context for task generation: {ARGS}
+작업 생성을 위한 컨텍스트: {ARGS}
 
-The tasks.md should be immediately executable - each task must be specific enough that an LLM can complete it without additional context.
+tasks.md는 즉시 실행 가능해야 합니다 - 각 작업은 LLM이 추가 컨텍스트 없이 완료할 수 있을 만큼 구체적이어야 합니다.
 
-## Task Generation Rules
+## 작업 생성 규칙
 
-**CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
+**중요**: 작업은 독립적인 구현 및 테스트를 가능하게 하기 위해 사용자 스토리별로 구성되어야 합니다.
 
-**Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+**테스트는 선택사항입니다**: 기능 명세에서 명시적으로 요청된 경우 또는 사용자가 TDD 접근 방식을 요청한 경우에만 테스트 작업을 생성합니다.
 
-### Checklist Format (REQUIRED)
+### 체크리스트 형식 (필수)
 
-Every task MUST strictly follow this format:
+모든 작업은 이 형식을 엄격히 따라야 합니다:
 
 ```text
-- [ ] [TaskID] [P?] [Story?] Description with file path
+- [ ] [TaskID] [P?] [Story?] 파일 경로가 포함된 설명
 ```
 
-**Format Components**:
+**형식 구성 요소**:
 
-1. **Checkbox**: ALWAYS start with `- [ ]` (markdown checkbox)
-2. **Task ID**: Sequential number (T001, T002, T003...) in execution order
-3. **[P] marker**: Include ONLY if task is parallelizable (different files, no dependencies on incomplete tasks)
-4. **[Story] label**: REQUIRED for user story phase tasks only
-   - Format: [US1], [US2], [US3], etc. (maps to user stories from spec.md)
-   - Setup phase: NO story label
-   - Foundational phase: NO story label  
-   - User Story phases: MUST have story label
-   - Polish phase: NO story label
-5. **Description**: Clear action with exact file path
+1. **체크박스**: 항상 `- [ ]`로 시작 (마크다운 체크박스)
+2. **작업 ID**: 실행 순서대로 순차 번호 (T001, T002, T003...)
+3. **[P] 마커**: 작업이 병렬화 가능한 경우에만 포함 (다른 파일, 미완료 작업에 대한 의존성 없음)
+4. **[Story] 레이블**: 사용자 스토리 단계 작업에만 필수
+   - 형식: [US1], [US2], [US3] 등 (spec.md의 사용자 스토리에 매핑)
+   - 설정 단계: 스토리 레이블 없음
+   - 기초 단계: 스토리 레이블 없음
+   - 사용자 스토리 단계: 스토리 레이블 필수
+   - 개선 단계: 스토리 레이블 없음
+5. **설명**: 정확한 파일 경로가 포함된 명확한 작업
 
-**Examples**:
+**예시**:
 
-- ✅ CORRECT: `- [ ] T001 Create project structure per implementation plan`
-- ✅ CORRECT: `- [ ] T005 [P] Implement authentication middleware in src/middleware/auth.py`
-- ✅ CORRECT: `- [ ] T012 [P] [US1] Create User model in src/models/user.py`
-- ✅ CORRECT: `- [ ] T014 [US1] Implement UserService in src/services/user_service.py`
-- ❌ WRONG: `- [ ] Create User model` (missing ID and Story label)
-- ❌ WRONG: `T001 [US1] Create model` (missing checkbox)
-- ❌ WRONG: `- [ ] [US1] Create User model` (missing Task ID)
-- ❌ WRONG: `- [ ] T001 [US1] Create model` (missing file path)
+- ✅ 올바름: `- [ ] T001 구현 계획에 따라 프로젝트 구조 생성`
+- ✅ 올바름: `- [ ] T005 [P] src/middleware/auth.py에 인증 미들웨어 구현`
+- ✅ 올바름: `- [ ] T012 [P] [US1] src/models/user.py에 User 모델 생성`
+- ✅ 올바름: `- [ ] T014 [US1] src/services/user_service.py에 UserService 구현`
+- ❌ 잘못됨: `- [ ] User 모델 생성` (ID 및 스토리 레이블 누락)
+- ❌ 잘못됨: `T001 [US1] 모델 생성` (체크박스 누락)
+- ❌ 잘못됨: `- [ ] [US1] User 모델 생성` (작업 ID 누락)
+- ❌ 잘못됨: `- [ ] T001 [US1] 모델 생성` (파일 경로 누락)
 
-### Task Organization
+### 작업 조직
 
-1. **From User Stories (spec.md)** - PRIMARY ORGANIZATION:
-   - Each user story (P1, P2, P3...) gets its own phase
-   - Map all related components to their story:
-     - Models needed for that story
-     - Services needed for that story
-     - Endpoints/UI needed for that story
-     - If tests requested: Tests specific to that story
-   - Mark story dependencies (most stories should be independent)
+1. **사용자 스토리에서 (spec.md)** - 주요 구성:
+   - 각 사용자 스토리(P1, P2, P3...)는 자체 단계를 갖습니다
+   - 모든 관련 컴포넌트를 스토리에 매핑합니다:
+     - 해당 스토리에 필요한 모델
+     - 해당 스토리에 필요한 서비스
+     - 해당 스토리에 필요한 엔드포인트/UI
+     - 테스트가 요청된 경우: 해당 스토리에 특정한 테스트
+   - 스토리 의존성 표시 (대부분의 스토리는 독립적이어야 함)
 
-2. **From Contracts**:
-   - Map each contract/endpoint → to the user story it serves
-   - If tests requested: Each contract → contract test task [P] before implementation in that story's phase
+2. **계약에서**:
+   - 각 계약/엔드포인트 → 제공하는 사용자 스토리에 매핑
+   - 테스트가 요청된 경우: 각 계약 → 해당 스토리 단계의 구현 전에 계약 테스트 작업 [P]
 
-3. **From Data Model**:
-   - Map each entity to the user story(ies) that need it
-   - If entity serves multiple stories: Put in earliest story or Setup phase
-   - Relationships → service layer tasks in appropriate story phase
+3. **데이터 모델에서**:
+   - 각 엔티티를 필요로 하는 사용자 스토리에 매핑
+   - 엔티티가 여러 스토리를 제공하는 경우: 가장 이른 스토리 또는 설정 단계에 배치
+   - 관계 → 적절한 스토리 단계의 서비스 계층 작업
 
-4. **From Setup/Infrastructure**:
-   - Shared infrastructure → Setup phase (Phase 1)
-   - Foundational/blocking tasks → Foundational phase (Phase 2)
-   - Story-specific setup → within that story's phase
+4. **설정/인프라에서**:
+   - 공유 인프라 → 설정 단계 (Phase 1)
+   - 기초/차단 작업 → 기초 단계 (Phase 2)
+   - 스토리별 설정 → 해당 스토리의 단계 내
 
-### Phase Structure
+### 단계 구조
 
-- **Phase 1**: Setup (project initialization)
-- **Phase 2**: Foundational (blocking prerequisites - MUST complete before user stories)
-- **Phase 3+**: User Stories in priority order (P1, P2, P3...)
-  - Within each story: Tests (if requested) → Models → Services → Endpoints → Integration
-  - Each phase should be a complete, independently testable increment
-- **Final Phase**: Polish & Cross-Cutting Concerns
+- **Phase 1**: 설정 (프로젝트 초기화)
+- **Phase 2**: 기초 (차단 전제조건 - 사용자 스토리 전에 완료되어야 함)
+- **Phase 3+**: 우선순위 순서의 사용자 스토리 (P1, P2, P3...)
+  - 각 스토리 내: 테스트 (요청된 경우) → 모델 → 서비스 → 엔드포인트 → 통합
+  - 각 단계는 완전하고 독립적으로 테스트 가능한 증분이어야 함
+- **최종 단계**: 개선 및 교차 관심사

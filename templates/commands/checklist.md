@@ -1,297 +1,297 @@
 ---
-description: Generate a custom checklist for the current feature based on user requirements.
+description: 사용자 요구사항을 기반으로 현재 기능에 대한 맞춤형 체크리스트를 생성합니다.
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json
   ps: scripts/powershell/check-prerequisites.ps1 -Json
 ---
 
-## Checklist Purpose: "Unit Tests for English"
+## 체크리스트 목적: "한국어로 작성된 요구사항의 단위 테스트"
 
-**CRITICAL CONCEPT**: Checklists are **UNIT TESTS FOR REQUIREMENTS WRITING** - they validate the quality, clarity, and completeness of requirements in a given domain.
+**중요한 개념**: 체크리스트는 **요구사항 작성을 위한 단위 테스트**입니다 - 특정 도메인에서 요구사항의 품질, 명확성 및 완전성을 검증합니다.
 
-**NOT for verification/testing**:
+**검증/테스트용이 아님**:
 
-- ❌ NOT "Verify the button clicks correctly"
-- ❌ NOT "Test error handling works"
-- ❌ NOT "Confirm the API returns 200"
-- ❌ NOT checking if code/implementation matches the spec
+- ❌ "버튼 클릭이 올바르게 작동하는지 확인" 아님
+- ❌ "오류 처리가 작동하는지 테스트" 아님
+- ❌ "API가 200을 반환하는지 확인" 아님
+- ❌ 코드/구현이 명세와 일치하는지 확인하는 것이 아님
 
-**FOR requirements quality validation**:
+**요구사항 품질 검증용**:
 
-- ✅ "Are visual hierarchy requirements defined for all card types?" (completeness)
-- ✅ "Is 'prominent display' quantified with specific sizing/positioning?" (clarity)
-- ✅ "Are hover state requirements consistent across all interactive elements?" (consistency)
-- ✅ "Are accessibility requirements defined for keyboard navigation?" (coverage)
-- ✅ "Does the spec define what happens when logo image fails to load?" (edge cases)
+- ✅ "모든 카드 유형에 대한 시각적 계층 구조 요구사항이 정의되었는가?" (완전성)
+- ✅ "'두드러진 표시'가 특정 크기/위치로 정량화되었는가?" (명확성)
+- ✅ "모든 인터랙티브 요소에서 호버 상태 요구사항이 일관되게 정의되었는가?" (일관성)
+- ✅ "키보드 내비게이션에 대한 접근성 요구사항이 정의되었는가?" (커버리지)
+- ✅ "로고 이미지 로드 실패 시 어떻게 되는지 명세에 정의되었는가?" (엣지 케이스)
 
-**Metaphor**: If your spec is code written in English, the checklist is its unit test suite. You're testing whether the requirements are well-written, complete, unambiguous, and ready for implementation - NOT whether the implementation works.
+**비유**: 명세가 한국어로 작성된 코드라면, 체크리스트는 단위 테스트 스위트입니다. 요구사항이 잘 작성되었는지, 완전한지, 명확한지, 구현 준비가 되었는지 테스트하는 것이지 - 구현이 작동하는지 테스트하는 것이 아닙니다.
 
-## User Input
+## 사용자 입력
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** consider the user input before proceeding (if not empty).
+진행하기 전에 사용자 입력을 **반드시** 고려해야 합니다(비어있지 않은 경우).
 
-## Execution Steps
+## 실행 단계
 
-1. **Setup**: Run `{SCRIPT}` from repo root and parse JSON for FEATURE_DIR and AVAILABLE_DOCS list.
-   - All file paths must be absolute.
-   - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. **설정**: 저장소 루트에서 `{SCRIPT}`를 실행하고 FEATURE_DIR 및 AVAILABLE_DOCS 목록에 대한 JSON을 파싱합니다.
+   - 모든 파일 경로는 절대 경로여야 합니다.
+   - "I'm Groot"와 같이 인수에 작은따옴표가 있는 경우 이스케이프 구문 사용: 예: 'I'\''m Groot' (또는 가능한 경우 큰따옴표: "I'm Groot").
 
-2. **Clarify intent (dynamic)**: Derive up to THREE initial contextual clarifying questions (no pre-baked catalog). They MUST:
-   - Be generated from the user's phrasing + extracted signals from spec/plan/tasks
-   - Only ask about information that materially changes checklist content
-   - Be skipped individually if already unambiguous in `$ARGUMENTS`
-   - Prefer precision over breadth
+2. **의도 명확화 (동적)**: 최대 3개의 초기 문맥적 명확화 질문을 도출합니다 (사전 준비된 카탈로그 없음). 다음을 충족해야 합니다:
+   - 사용자의 표현 + spec/plan/tasks에서 추출된 신호로부터 생성
+   - 체크리스트 내용을 실질적으로 변경하는 정보에 대해서만 질문
+   - `$ARGUMENTS`에서 이미 명확한 경우 개별적으로 건너뜀
+   - 폭보다 정확성 선호
 
-   Generation algorithm:
-   1. Extract signals: feature domain keywords (e.g., auth, latency, UX, API), risk indicators ("critical", "must", "compliance"), stakeholder hints ("QA", "review", "security team"), and explicit deliverables ("a11y", "rollback", "contracts").
-   2. Cluster signals into candidate focus areas (max 4) ranked by relevance.
-   3. Identify probable audience & timing (author, reviewer, QA, release) if not explicit.
-   4. Detect missing dimensions: scope breadth, depth/rigor, risk emphasis, exclusion boundaries, measurable acceptance criteria.
-   5. Formulate questions chosen from these archetypes:
-      - Scope refinement (e.g., "Should this include integration touchpoints with X and Y or stay limited to local module correctness?")
-      - Risk prioritization (e.g., "Which of these potential risk areas should receive mandatory gating checks?")
-      - Depth calibration (e.g., "Is this a lightweight pre-commit sanity list or a formal release gate?")
-      - Audience framing (e.g., "Will this be used by the author only or peers during PR review?")
-      - Boundary exclusion (e.g., "Should we explicitly exclude performance tuning items this round?")
-      - Scenario class gap (e.g., "No recovery flows detected—are rollback / partial failure paths in scope?")
+   생성 알고리즘:
+   1. 신호 추출: 기능 도메인 키워드 (예: auth, latency, UX, API), 위험 지표 ("critical", "must", "compliance"), 이해관계자 힌트 ("QA", "review", "security team"), 명시적 결과물 ("a11y", "rollback", "contracts").
+   2. 신호를 관련성 순으로 순위가 매겨진 후보 초점 영역(최대 4개)으로 클러스터링합니다.
+   3. 명시적이지 않은 경우 예상 청중 및 타이밍(작성자, 검토자, QA, 릴리스)을 식별합니다.
+   4. 누락된 차원 감지: 범위 폭, 깊이/엄격성, 위험 강조, 제외 경계, 측정 가능한 수락 기준.
+   5. 다음 원형에서 선택한 질문을 공식화합니다:
+      - 범위 개선 (예: "X 및 Y와의 통합 접점을 포함해야 합니까 아니면 로컬 모듈 정확성에 국한되어야 합니까?")
+      - 위험 우선순위 지정 (예: "이러한 잠재적 위험 영역 중 어느 것이 필수 게이팅 검사를 받아야 합니까?")
+      - 깊이 보정 (예: "가벼운 사전 커밋 점검 목록입니까 아니면 공식 릴리스 게이트입니까?")
+      - 청중 프레이밍 (예: "작성자만 사용합니까 아니면 PR 검토 중 동료가 사용합니까?")
+      - 경계 제외 (예: "이번 라운드에서 성능 튜닝 항목을 명시적으로 제외해야 합니까?")
+      - 시나리오 클래스 갭 (예: "복구 흐름이 감지되지 않음—롤백 / 부분 실패 경로가 범위에 포함됩니까?")
 
-   Question formatting rules:
-   - If presenting options, generate a compact table with columns: Option | Candidate | Why It Matters
-   - Limit to A–E options maximum; omit table if a free-form answer is clearer
-   - Never ask the user to restate what they already said
-   - Avoid speculative categories (no hallucination). If uncertain, ask explicitly: "Confirm whether X belongs in scope."
+   질문 형식 규칙:
+   - 옵션을 제시하는 경우 다음 열로 간결한 테이블을 생성합니다: 옵션 | 후보 | 중요한 이유
+   - 최대 A-E 옵션으로 제한; 자유 형식 답변이 더 명확한 경우 테이블 생략
+   - 사용자에게 이미 말한 것을 다시 말하도록 요청하지 않음
+   - 추측성 카테고리 피하기 (환각 없음). 불확실한 경우 명시적으로 질문: "X가 범위에 속하는지 확인하십시오."
 
-   Defaults when interaction impossible:
-   - Depth: Standard
-   - Audience: Reviewer (PR) if code-related; Author otherwise
-   - Focus: Top 2 relevance clusters
+   상호작용이 불가능할 때의 기본값:
+   - 깊이: 표준
+   - 청중: 코드 관련인 경우 검토자(PR); 그렇지 않으면 작성자
+   - 초점: 상위 2개 관련성 클러스터
 
-   Output the questions (label Q1/Q2/Q3). After answers: if ≥2 scenario classes (Alternate / Exception / Recovery / Non-Functional domain) remain unclear, you MAY ask up to TWO more targeted follow‑ups (Q4/Q5) with a one-line justification each (e.g., "Unresolved recovery path risk"). Do not exceed five total questions. Skip escalation if user explicitly declines more.
+   질문을 출력합니다(Q1/Q2/Q3 레이블). 답변 후: ≥2개의 시나리오 클래스(대안 / 예외 / 복구 / 비기능 도메인)가 불명확한 경우, 각각 한 줄 정당화와 함께 최대 2개의 추가 대상 후속 질문(Q4/Q5)을 할 수 있습니다(예: "미해결 복구 경로 위험"). 총 5개 질문을 초과하지 마십시오. 사용자가 명시적으로 더 거부하면 에스컬레이션을 건너뜁니다.
 
-3. **Understand user request**: Combine `$ARGUMENTS` + clarifying answers:
-   - Derive checklist theme (e.g., security, review, deploy, ux)
-   - Consolidate explicit must-have items mentioned by user
-   - Map focus selections to category scaffolding
-   - Infer any missing context from spec/plan/tasks (do NOT hallucinate)
+3. **사용자 요청 이해**: `$ARGUMENTS` + 명확화 답변 결합:
+   - 체크리스트 주제 도출 (예: security, review, deploy, ux)
+   - 사용자가 언급한 명시적 필수 항목 통합
+   - 초점 선택을 카테고리 스캐폴딩에 매핑
+   - spec/plan/tasks에서 누락된 컨텍스트 추론 (환각하지 않음)
 
-4. **Load feature context**: Read from FEATURE_DIR:
-   - spec.md: Feature requirements and scope
-   - plan.md (if exists): Technical details, dependencies
-   - tasks.md (if exists): Implementation tasks
+4. **기능 컨텍스트 로드**: FEATURE_DIR에서 읽기:
+   - spec.md: 기능 요구사항 및 범위
+   - plan.md (있는 경우): 기술 세부사항, 의존성
+   - tasks.md (있는 경우): 구현 작업
 
-   **Context Loading Strategy**:
-   - Load only necessary portions relevant to active focus areas (avoid full-file dumping)
-   - Prefer summarizing long sections into concise scenario/requirement bullets
-   - Use progressive disclosure: add follow-on retrieval only if gaps detected
-   - If source docs are large, generate interim summary items instead of embedding raw text
+   **컨텍스트 로딩 전략**:
+   - 활성 초점 영역과 관련된 필요한 부분만 로드 (전체 파일 덤프 방지)
+   - 긴 섹션을 간결한 시나리오/요구사항 글머리 기호로 요약 선호
+   - 점진적 공개 사용: 갭이 감지된 경우에만 후속 검색 추가
+   - 소스 문서가 큰 경우 원시 텍스트를 임베드하는 대신 중간 요약 항목 생성
 
-5. **Generate checklist** - Create "Unit Tests for Requirements":
-   - Create `FEATURE_DIR/checklists/` directory if it doesn't exist
-   - Generate unique checklist filename:
-     - Use short, descriptive name based on domain (e.g., `ux.md`, `api.md`, `security.md`)
-     - Format: `[domain].md`
-     - If file exists, append to existing file
-   - Number items sequentially starting from CHK001
-   - Each `/speckit.checklist` run creates a NEW file (never overwrites existing checklists)
+5. **체크리스트 생성** - "요구사항을 위한 단위 테스트" 생성:
+   - `FEATURE_DIR/checklists/` 디렉터리가 없으면 생성
+   - 고유한 체크리스트 파일명 생성:
+     - 도메인 기반의 짧고 설명적인 이름 사용 (예: `ux.md`, `api.md`, `security.md`)
+     - 형식: `[domain].md`
+     - 파일이 있으면 기존 파일에 추가
+   - CHK001부터 시작하여 순차적으로 항목 번호 매기기
+   - 각 `/speckit.checklist` 실행은 새 파일을 생성합니다 (기존 체크리스트를 덮어쓰지 않음)
 
-   **CORE PRINCIPLE - Test the Requirements, Not the Implementation**:
-   Every checklist item MUST evaluate the REQUIREMENTS THEMSELVES for:
-   - **Completeness**: Are all necessary requirements present?
-   - **Clarity**: Are requirements unambiguous and specific?
-   - **Consistency**: Do requirements align with each other?
-   - **Measurability**: Can requirements be objectively verified?
-   - **Coverage**: Are all scenarios/edge cases addressed?
+   **핵심 원칙 - 구현이 아닌 요구사항 테스트**:
+   모든 체크리스트 항목은 요구사항 자체를 다음에 대해 평가해야 합니다:
+   - **완전성**: 모든 필수 요구사항이 있습니까?
+   - **명확성**: 요구사항이 명확하고 구체적입니까?
+   - **일관성**: 요구사항이 서로 일치합니까?
+   - **측정 가능성**: 요구사항을 객관적으로 확인할 수 있습니까?
+   - **커버리지**: 모든 시나리오/엣지 케이스가 다루어졌습니까?
 
-   **Category Structure** - Group items by requirement quality dimensions:
-   - **Requirement Completeness** (Are all necessary requirements documented?)
-   - **Requirement Clarity** (Are requirements specific and unambiguous?)
-   - **Requirement Consistency** (Do requirements align without conflicts?)
-   - **Acceptance Criteria Quality** (Are success criteria measurable?)
-   - **Scenario Coverage** (Are all flows/cases addressed?)
-   - **Edge Case Coverage** (Are boundary conditions defined?)
-   - **Non-Functional Requirements** (Performance, Security, Accessibility, etc. - are they specified?)
-   - **Dependencies & Assumptions** (Are they documented and validated?)
-   - **Ambiguities & Conflicts** (What needs clarification?)
+   **카테고리 구조** - 요구사항 품질 차원별로 항목 그룹화:
+   - **요구사항 완전성** (모든 필수 요구사항이 문서화되었습니까?)
+   - **요구사항 명확성** (요구사항이 구체적이고 명확합니까?)
+   - **요구사항 일관성** (요구사항이 충돌 없이 일치합니까?)
+   - **수락 기준 품질** (성공 기준이 측정 가능합니까?)
+   - **시나리오 커버리지** (모든 흐름/케이스가 다루어졌습니까?)
+   - **엣지 케이스 커버리지** (경계 조건이 정의되었습니까?)
+   - **비기능 요구사항** (성능, 보안, 접근성 등 - 명시되었습니까?)
+   - **의존성 및 가정** (문서화되고 검증되었습니까?)
+   - **모호성 및 충돌** (명확히해야 할 사항은 무엇입니까?)
 
-   **HOW TO WRITE CHECKLIST ITEMS - "Unit Tests for English"**:
+   **체크리스트 항목 작성 방법 - "한국어를 위한 단위 테스트"**:
 
-   ❌ **WRONG** (Testing implementation):
-   - "Verify landing page displays 3 episode cards"
-   - "Test hover states work on desktop"
-   - "Confirm logo click navigates home"
+   ❌ **잘못됨** (구현 테스트):
+   - "랜딩 페이지에 3개의 에피소드 카드가 표시되는지 확인"
+   - "데스크톱에서 호버 상태가 작동하는지 테스트"
+   - "로고 클릭이 홈으로 이동하는지 확인"
 
-   ✅ **CORRECT** (Testing requirements quality):
-   - "Are the exact number and layout of featured episodes specified?" [Completeness]
-   - "Is 'prominent display' quantified with specific sizing/positioning?" [Clarity]
-   - "Are hover state requirements consistent across all interactive elements?" [Consistency]
-   - "Are keyboard navigation requirements defined for all interactive UI?" [Coverage]
-   - "Is the fallback behavior specified when logo image fails to load?" [Edge Cases]
-   - "Are loading states defined for asynchronous episode data?" [Completeness]
-   - "Does the spec define visual hierarchy for competing UI elements?" [Clarity]
+   ✅ **올바름** (요구사항 품질 테스트):
+   - "특집 에피소드의 정확한 수와 레이아웃이 명시되었습니까?" [완전성]
+   - "'두드러진 표시'가 특정 크기/위치로 정량화되었습니까?" [명확성]
+   - "모든 인터랙티브 요소에서 호버 상태 요구사항이 일관되게 정의되었습니까?" [일관성]
+   - "모든 인터랙티브 UI에 대한 키보드 내비게이션 요구사항이 정의되었습니까?" [커버리지]
+   - "로고 이미지 로드 실패 시 폴백 동작이 명시되었습니까?" [엣지 케이스]
+   - "비동기 에피소드 데이터에 대한 로딩 상태가 정의되었습니까?" [완전성]
+   - "경쟁하는 UI 요소에 대한 시각적 계층 구조를 명세에서 정의합니까?" [명확성]
 
-   **ITEM STRUCTURE**:
-   Each item should follow this pattern:
-   - Question format asking about requirement quality
-   - Focus on what's WRITTEN (or not written) in the spec/plan
-   - Include quality dimension in brackets [Completeness/Clarity/Consistency/etc.]
-   - Reference spec section `[Spec §X.Y]` when checking existing requirements
-   - Use `[Gap]` marker when checking for missing requirements
+   **항목 구조**:
+   각 항목은 다음 패턴을 따라야 합니다:
+   - 요구사항 품질에 대해 묻는 질문 형식
+   - spec/plan에 작성된 (또는 작성되지 않은) 내용에 초점
+   - 대괄호 안에 품질 차원 포함 [완전성/명확성/일관성/등]
+   - 기존 요구사항을 확인할 때 명세 섹션 참조 `[Spec §X.Y]`
+   - 누락된 요구사항을 확인할 때 `[Gap]` 마커 사용
 
-   **EXAMPLES BY QUALITY DIMENSION**:
+   **품질 차원별 예시**:
 
-   Completeness:
-   - "Are error handling requirements defined for all API failure modes? [Gap]"
-   - "Are accessibility requirements specified for all interactive elements? [Completeness]"
-   - "Are mobile breakpoint requirements defined for responsive layouts? [Gap]"
+   완전성:
+   - "모든 API 실패 모드에 대한 오류 처리 요구사항이 정의되었습니까? [Gap]"
+   - "모든 인터랙티브 요소에 대한 접근성 요구사항이 명시되었습니까? [완전성]"
+   - "반응형 레이아웃에 대한 모바일 중단점 요구사항이 정의되었습니까? [Gap]"
 
-   Clarity:
-   - "Is 'fast loading' quantified with specific timing thresholds? [Clarity, Spec §NFR-2]"
-   - "Are 'related episodes' selection criteria explicitly defined? [Clarity, Spec §FR-5]"
-   - "Is 'prominent' defined with measurable visual properties? [Ambiguity, Spec §FR-4]"
+   명확성:
+   - "'빠른 로딩'이 특정 시간 임계값으로 정량화되었습니까? [명확성, Spec §NFR-2]"
+   - "'관련 에피소드' 선택 기준이 명시적으로 정의되었습니까? [명확성, Spec §FR-5]"
+   - "'두드러진'이 측정 가능한 시각적 속성으로 정의되었습니까? [모호성, Spec §FR-4]"
 
-   Consistency:
-   - "Do navigation requirements align across all pages? [Consistency, Spec §FR-10]"
-   - "Are card component requirements consistent between landing and detail pages? [Consistency]"
+   일관성:
+   - "모든 페이지에서 내비게이션 요구사항이 일치합니까? [일관성, Spec §FR-10]"
+   - "랜딩 페이지와 상세 페이지 사이에 카드 컴포넌트 요구사항이 일관됩니까? [일관성]"
 
-   Coverage:
-   - "Are requirements defined for zero-state scenarios (no episodes)? [Coverage, Edge Case]"
-   - "Are concurrent user interaction scenarios addressed? [Coverage, Gap]"
-   - "Are requirements specified for partial data loading failures? [Coverage, Exception Flow]"
+   커버리지:
+   - "제로 상태 시나리오(에피소드 없음)에 대한 요구사항이 정의되었습니까? [커버리지, 엣지 케이스]"
+   - "동시 사용자 상호작용 시나리오가 다루어졌습니까? [커버리지, Gap]"
+   - "부분 데이터 로딩 실패에 대한 요구사항이 명시되었습니까? [커버리지, 예외 흐름]"
 
-   Measurability:
-   - "Are visual hierarchy requirements measurable/testable? [Acceptance Criteria, Spec §FR-1]"
-   - "Can 'balanced visual weight' be objectively verified? [Measurability, Spec §FR-2]"
+   측정 가능성:
+   - "시각적 계층 구조 요구사항이 측정 가능/테스트 가능합니까? [수락 기준, Spec §FR-1]"
+   - "'균형 잡힌 시각적 무게'를 객관적으로 확인할 수 있습니까? [측정 가능성, Spec §FR-2]"
 
-   **Scenario Classification & Coverage** (Requirements Quality Focus):
-   - Check if requirements exist for: Primary, Alternate, Exception/Error, Recovery, Non-Functional scenarios
-   - For each scenario class, ask: "Are [scenario type] requirements complete, clear, and consistent?"
-   - If scenario class missing: "Are [scenario type] requirements intentionally excluded or missing? [Gap]"
-   - Include resilience/rollback when state mutation occurs: "Are rollback requirements defined for migration failures? [Gap]"
+   **시나리오 분류 및 커버리지** (요구사항 품질 초점):
+   - 다음에 대한 요구사항이 존재하는지 확인: 기본, 대안, 예외/오류, 복구, 비기능 시나리오
+   - 각 시나리오 클래스에 대해 질문: "[시나리오 유형] 요구사항이 완전하고 명확하며 일관됩니까?"
+   - 시나리오 클래스가 누락된 경우: "[시나리오 유형] 요구사항이 의도적으로 제외되었거나 누락되었습니까? [Gap]"
+   - 상태 변경이 발생할 때 복원력/롤백 포함: "마이그레이션 실패에 대한 롤백 요구사항이 정의되었습니까? [Gap]"
 
-   **Traceability Requirements**:
-   - MINIMUM: ≥80% of items MUST include at least one traceability reference
-   - Each item should reference: spec section `[Spec §X.Y]`, or use markers: `[Gap]`, `[Ambiguity]`, `[Conflict]`, `[Assumption]`
-   - If no ID system exists: "Is a requirement & acceptance criteria ID scheme established? [Traceability]"
+   **추적 가능성 요구사항**:
+   - 최소: 항목의 ≥80%는 최소 하나의 추적 가능성 참조를 포함해야 합니다
+   - 각 항목은 다음을 참조해야 합니다: 명세 섹션 `[Spec §X.Y]`, 또는 마커 사용: `[Gap]`, `[Ambiguity]`, `[Conflict]`, `[Assumption]`
+   - ID 시스템이 없는 경우: "요구사항 및 수락 기준 ID 체계가 확립되었습니까? [Traceability]"
 
-   **Surface & Resolve Issues** (Requirements Quality Problems):
-   Ask questions about the requirements themselves:
-   - Ambiguities: "Is the term 'fast' quantified with specific metrics? [Ambiguity, Spec §NFR-1]"
-   - Conflicts: "Do navigation requirements conflict between §FR-10 and §FR-10a? [Conflict]"
-   - Assumptions: "Is the assumption of 'always available podcast API' validated? [Assumption]"
-   - Dependencies: "Are external podcast API requirements documented? [Dependency, Gap]"
-   - Missing definitions: "Is 'visual hierarchy' defined with measurable criteria? [Gap]"
+   **문제 표면화 및 해결** (요구사항 품질 문제):
+   요구사항 자체에 대한 질문:
+   - 모호성: "'빠른'이라는 용어가 특정 메트릭으로 정량화되었습니까? [Ambiguity, Spec §NFR-1]"
+   - 충돌: "§FR-10과 §FR-10a 사이에 내비게이션 요구사항이 충돌합니까? [Conflict]"
+   - 가정: "'항상 사용 가능한 팟캐스트 API'라는 가정이 검증되었습니까? [Assumption]"
+   - 의존성: "외부 팟캐스트 API 요구사항이 문서화되었습니까? [Dependency, Gap]"
+   - 누락된 정의: "'시각적 계층 구조'가 측정 가능한 기준으로 정의되었습니까? [Gap]"
 
-   **Content Consolidation**:
-   - Soft cap: If raw candidate items > 40, prioritize by risk/impact
-   - Merge near-duplicates checking the same requirement aspect
-   - If >5 low-impact edge cases, create one item: "Are edge cases X, Y, Z addressed in requirements? [Coverage]"
+   **콘텐츠 통합**:
+   - 소프트 캡: 원시 후보 항목이 40개를 초과하면 위험/영향으로 우선순위 지정
+   - 동일한 요구사항 측면을 확인하는 거의 중복 항목 병합
+   - 5개 이상의 저영향 엣지 케이스가 있는 경우 하나의 항목 생성: "엣지 케이스 X, Y, Z가 요구사항에서 다루어졌습니까? [Coverage]"
 
-   **🚫 ABSOLUTELY PROHIBITED** - These make it an implementation test, not a requirements test:
-   - ❌ Any item starting with "Verify", "Test", "Confirm", "Check" + implementation behavior
-   - ❌ References to code execution, user actions, system behavior
-   - ❌ "Displays correctly", "works properly", "functions as expected"
-   - ❌ "Click", "navigate", "render", "load", "execute"
-   - ❌ Test cases, test plans, QA procedures
-   - ❌ Implementation details (frameworks, APIs, algorithms)
+   **🚫 절대 금지** - 이것들은 요구사항 테스트가 아닌 구현 테스트가 됩니다:
+   - ❌ "확인", "테스트", "검증", "체크" + 구현 동작으로 시작하는 모든 항목
+   - ❌ 코드 실행, 사용자 작업, 시스템 동작에 대한 참조
+   - ❌ "올바르게 표시", "제대로 작동", "예상대로 기능"
+   - ❌ "클릭", "이동", "렌더링", "로드", "실행"
+   - ❌ 테스트 케이스, 테스트 계획, QA 절차
+   - ❌ 구현 세부사항 (프레임워크, API, 알고리즘)
 
-   **✅ REQUIRED PATTERNS** - These test requirements quality:
-   - ✅ "Are [requirement type] defined/specified/documented for [scenario]?"
-   - ✅ "Is [vague term] quantified/clarified with specific criteria?"
-   - ✅ "Are requirements consistent between [section A] and [section B]?"
-   - ✅ "Can [requirement] be objectively measured/verified?"
-   - ✅ "Are [edge cases/scenarios] addressed in requirements?"
-   - ✅ "Does the spec define [missing aspect]?"
+   **✅ 필수 패턴** - 이것들은 요구사항 품질을 테스트합니다:
+   - ✅ "[시나리오]에 대해 [요구사항 유형]이 정의/명시/문서화되었습니까?"
+   - ✅ "[모호한 용어]가 특정 기준으로 정량화/명확화되었습니까?"
+   - ✅ "[섹션 A]와 [섹션 B] 사이에 요구사항이 일관되게 정의되었습니까?"
+   - ✅ "[요구사항]을 객관적으로 측정/확인할 수 있습니까?"
+   - ✅ "[엣지 케이스/시나리오]가 요구사항에서 다루어졌습니까?"
+   - ✅ "명세에서 [누락된 측면]을 정의합니까?"
 
-6. **Structure Reference**: Generate the checklist following the canonical template in `templates/checklist-template.md` for title, meta section, category headings, and ID formatting. If template is unavailable, use: H1 title, purpose/created meta lines, `##` category sections containing `- [ ] CHK### <requirement item>` lines with globally incrementing IDs starting at CHK001.
+6. **구조 참조**: 제목, 메타 섹션, 카테고리 제목 및 ID 형식에 대해 `templates/checklist-template.md`의 표준 템플릿을 따라 체크리스트를 생성합니다. 템플릿을 사용할 수 없는 경우: H1 제목, 목적/생성 메타 줄, CHK001부터 시작하여 전역으로 증가하는 ID로 `- [ ] CHK### <요구사항 항목>` 줄을 포함하는 `##` 카테고리 섹션을 사용합니다.
 
-7. **Report**: Output full path to created checklist, item count, and remind user that each run creates a new file. Summarize:
-   - Focus areas selected
-   - Depth level
-   - Actor/timing
-   - Any explicit user-specified must-have items incorporated
+7. **보고**: 생성된 체크리스트의 전체 경로, 항목 수를 출력하고 각 실행이 새 파일을 생성한다는 것을 사용자에게 상기시킵니다. 요약:
+   - 선택된 초점 영역
+   - 깊이 수준
+   - 액터/타이밍
+   - 포함된 명시적으로 사용자가 지정한 필수 항목
 
-**Important**: Each `/speckit.checklist` command invocation creates a checklist file using short, descriptive names unless file already exists. This allows:
+**중요**: 각 `/speckit.checklist` 명령 호출은 파일이 이미 존재하지 않는 한 짧고 설명적인 이름을 사용하여 체크리스트 파일을 생성합니다. 이를 통해:
 
-- Multiple checklists of different types (e.g., `ux.md`, `test.md`, `security.md`)
-- Simple, memorable filenames that indicate checklist purpose
-- Easy identification and navigation in the `checklists/` folder
+- 다양한 유형의 여러 체크리스트 (예: `ux.md`, `test.md`, `security.md`)
+- 체크리스트 목적을 나타내는 간단하고 기억하기 쉬운 파일 이름
+- `checklists/` 폴더에서 쉬운 식별 및 탐색
 
-To avoid clutter, use descriptive types and clean up obsolete checklists when done.
+혼잡을 피하려면 설명적인 유형을 사용하고 완료되면 오래된 체크리스트를 정리하십시오.
 
-## Example Checklist Types & Sample Items
+## 예시 체크리스트 유형 및 샘플 항목
 
-**UX Requirements Quality:** `ux.md`
+**UX 요구사항 품질:** `ux.md`
 
-Sample items (testing the requirements, NOT the implementation):
+샘플 항목 (구현이 아닌 요구사항 테스트):
 
-- "Are visual hierarchy requirements defined with measurable criteria? [Clarity, Spec §FR-1]"
-- "Is the number and positioning of UI elements explicitly specified? [Completeness, Spec §FR-1]"
-- "Are interaction state requirements (hover, focus, active) consistently defined? [Consistency]"
-- "Are accessibility requirements specified for all interactive elements? [Coverage, Gap]"
-- "Is fallback behavior defined when images fail to load? [Edge Case, Gap]"
-- "Can 'prominent display' be objectively measured? [Measurability, Spec §FR-4]"
+- "시각적 계층 구조 요구사항이 측정 가능한 기준으로 정의되었습니까? [명확성, Spec §FR-1]"
+- "UI 요소의 수와 위치가 명시적으로 지정되었습니까? [완전성, Spec §FR-1]"
+- "상호작용 상태 요구사항 (hover, focus, active)이 일관되게 정의되었습니까? [일관성]"
+- "모든 인터랙티브 요소에 대한 접근성 요구사항이 명시되었습니까? [커버리지, Gap]"
+- "이미지 로드 실패 시 폴백 동작이 정의되었습니까? [엣지 케이스, Gap]"
+- "'두드러진 표시'를 객관적으로 측정할 수 있습니까? [측정 가능성, Spec §FR-4]"
 
-**API Requirements Quality:** `api.md`
+**API 요구사항 품질:** `api.md`
 
-Sample items:
+샘플 항목:
 
-- "Are error response formats specified for all failure scenarios? [Completeness]"
-- "Are rate limiting requirements quantified with specific thresholds? [Clarity]"
-- "Are authentication requirements consistent across all endpoints? [Consistency]"
-- "Are retry/timeout requirements defined for external dependencies? [Coverage, Gap]"
-- "Is versioning strategy documented in requirements? [Gap]"
+- "모든 실패 시나리오에 대한 오류 응답 형식이 명시되었습니까? [완전성]"
+- "속도 제한 요구사항이 특정 임계값으로 정량화되었습니까? [명확성]"
+- "모든 엔드포인트에서 인증 요구사항이 일관되게 정의되었습니까? [일관성]"
+- "외부 의존성에 대한 재시도/타임아웃 요구사항이 정의되었습니까? [커버리지, Gap]"
+- "버전 관리 전략이 요구사항에 문서화되었습니까? [Gap]"
 
-**Performance Requirements Quality:** `performance.md`
+**성능 요구사항 품질:** `performance.md`
 
-Sample items:
+샘플 항목:
 
-- "Are performance requirements quantified with specific metrics? [Clarity]"
-- "Are performance targets defined for all critical user journeys? [Coverage]"
-- "Are performance requirements under different load conditions specified? [Completeness]"
-- "Can performance requirements be objectively measured? [Measurability]"
-- "Are degradation requirements defined for high-load scenarios? [Edge Case, Gap]"
+- "성능 요구사항이 특정 메트릭으로 정량화되었습니까? [명확성]"
+- "모든 중요한 사용자 여정에 대한 성능 목표가 정의되었습니까? [커버리지]"
+- "다양한 부하 조건에서의 성능 요구사항이 명시되었습니까? [완전성]"
+- "성능 요구사항을 객관적으로 측정할 수 있습니까? [측정 가능성]"
+- "고부하 시나리오에 대한 성능 저하 요구사항이 정의되었습니까? [엣지 케이스, Gap]"
 
-**Security Requirements Quality:** `security.md`
+**보안 요구사항 품질:** `security.md`
 
-Sample items:
+샘플 항목:
 
-- "Are authentication requirements specified for all protected resources? [Coverage]"
-- "Are data protection requirements defined for sensitive information? [Completeness]"
-- "Is the threat model documented and requirements aligned to it? [Traceability]"
-- "Are security requirements consistent with compliance obligations? [Consistency]"
-- "Are security failure/breach response requirements defined? [Gap, Exception Flow]"
+- "모든 보호된 리소스에 대한 인증 요구사항이 명시되었습니까? [커버리지]"
+- "민감한 정보에 대한 데이터 보호 요구사항이 정의되었습니까? [완전성]"
+- "위협 모델이 문서화되고 요구사항이 이에 맞춰졌습니까? [추적 가능성]"
+- "보안 요구사항이 규정 준수 의무와 일치합니까? [일관성]"
+- "보안 실패/침해 대응 요구사항이 정의되었습니까? [Gap, 예외 흐름]"
 
-## Anti-Examples: What NOT To Do
+## 안티 예시: 하지 말아야 할 것
 
-**❌ WRONG - These test implementation, not requirements:**
-
-```markdown
-- [ ] CHK001 - Verify landing page displays 3 episode cards [Spec §FR-001]
-- [ ] CHK002 - Test hover states work correctly on desktop [Spec §FR-003]
-- [ ] CHK003 - Confirm logo click navigates to home page [Spec §FR-010]
-- [ ] CHK004 - Check that related episodes section shows 3-5 items [Spec §FR-005]
-```
-
-**✅ CORRECT - These test requirements quality:**
+**❌ 잘못됨 - 이것들은 요구사항이 아닌 구현을 테스트합니다:**
 
 ```markdown
-- [ ] CHK001 - Are the number and layout of featured episodes explicitly specified? [Completeness, Spec §FR-001]
-- [ ] CHK002 - Are hover state requirements consistently defined for all interactive elements? [Consistency, Spec §FR-003]
-- [ ] CHK003 - Are navigation requirements clear for all clickable brand elements? [Clarity, Spec §FR-010]
-- [ ] CHK004 - Is the selection criteria for related episodes documented? [Gap, Spec §FR-005]
-- [ ] CHK005 - Are loading state requirements defined for asynchronous episode data? [Gap]
-- [ ] CHK006 - Can "visual hierarchy" requirements be objectively measured? [Measurability, Spec §FR-001]
+- [ ] CHK001 - 랜딩 페이지에 3개의 에피소드 카드가 표시되는지 확인 [Spec §FR-001]
+- [ ] CHK002 - 데스크톱에서 호버 상태가 올바르게 작동하는지 테스트 [Spec §FR-003]
+- [ ] CHK003 - 로고 클릭이 홈 페이지로 이동하는지 확인 [Spec §FR-010]
+- [ ] CHK004 - 관련 에피소드 섹션에 3-5개 항목이 표시되는지 확인 [Spec §FR-005]
 ```
 
-**Key Differences:**
+**✅ 올바름 - 이것들은 요구사항 품질을 테스트합니다:**
 
-- Wrong: Tests if the system works correctly
-- Correct: Tests if the requirements are written correctly
-- Wrong: Verification of behavior
-- Correct: Validation of requirement quality
-- Wrong: "Does it do X?"
-- Correct: "Is X clearly specified?"
+```markdown
+- [ ] CHK001 - 특집 에피소드의 수와 레이아웃이 명시적으로 지정되었습니까? [완전성, Spec §FR-001]
+- [ ] CHK002 - 모든 인터랙티브 요소에 대한 호버 상태 요구사항이 일관되게 정의되었습니까? [일관성, Spec §FR-003]
+- [ ] CHK003 - 클릭 가능한 모든 브랜드 요소에 대한 내비게이션 요구사항이 명확합니까? [명확성, Spec §FR-010]
+- [ ] CHK004 - 관련 에피소드의 선택 기준이 문서화되었습니까? [Gap, Spec §FR-005]
+- [ ] CHK005 - 비동기 에피소드 데이터에 대한 로딩 상태 요구사항이 정의되었습니까? [Gap]
+- [ ] CHK006 - "시각적 계층 구조" 요구사항을 객관적으로 측정할 수 있습니까? [측정 가능성, Spec §FR-001]
+```
+
+**주요 차이점:**
+
+- 잘못됨: 시스템이 올바르게 작동하는지 테스트
+- 올바름: 요구사항이 올바르게 작성되었는지 테스트
+- 잘못됨: 동작 검증
+- 올바름: 요구사항 품질 유효성 검사
+- 잘못됨: "X를 수행합니까?"
+- 올바름: "X가 명확하게 지정되었습니까?"

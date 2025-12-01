@@ -1,50 +1,50 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# [프로젝트명] 헌장
+<!-- 예시: Spec 헌장, TaskFlow 헌장 등 -->
 
-## Core Principles
+## 핵심 원칙
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### [원칙_1_이름]
+<!-- 예시: I. 라이브러리 우선 -->
+[원칙_1_설명]
+<!-- 예시: 모든 기능은 독립형 라이브러리로 시작; 라이브러리는 자체 포함되고 독립적으로 테스트 가능하며 문서화되어야 함; 명확한 목적 필수 - 조직용 라이브러리만 있어서는 안 됨 -->
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### [원칙_2_이름]
+<!-- 예시: II. CLI 인터페이스 -->
+[원칙_2_설명]
+<!-- 예시: 모든 라이브러리는 CLI를 통해 기능 노출; 텍스트 입출력 프로토콜: stdin/args → stdout, 오류 → stderr; JSON 및 사람이 읽을 수 있는 형식 지원 -->
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### [원칙_3_이름]
+<!-- 예시: III. 테스트 우선 (타협 불가) -->
+[원칙_3_설명]
+<!-- 예시: TDD 필수: 테스트 작성 → 사용자 승인 → 테스트 실패 → 구현; Red-Green-Refactor 사이클 엄격히 준수 -->
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### [원칙_4_이름]
+<!-- 예시: IV. 통합 테스트 -->
+[원칙_4_설명]
+<!-- 예시: 통합 테스트가 필요한 영역: 새 라이브러리 계약 테스트, 계약 변경, 서비스 간 통신, 공유 스키마 -->
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### [원칙_5_이름]
+<!-- 예시: V. 관찰 가능성, VI. 버전 관리 및 호환성 변경, VII. 단순성 -->
+[원칙_5_설명]
+<!-- 예시: 텍스트 I/O는 디버깅 가능성 보장; 구조화된 로깅 필수; 또는: MAJOR.MINOR.BUILD 형식; 또는: 단순하게 시작, YAGNI 원칙 -->
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## [섹션_2_이름]
+<!-- 예시: 추가 제약사항, 보안 요구사항, 성능 기준 등 -->
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+[섹션_2_내용]
+<!-- 예시: 기술 스택 요구사항, 규정 준수 기준, 배포 정책 등 -->
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## [섹션_3_이름]
+<!-- 예시: 개발 워크플로우, 검토 프로세스, 품질 게이트 등 -->
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+[섹션_3_내용]
+<!-- 예시: 코드 검토 요구사항, 테스트 게이트, 배포 승인 프로세스 등 -->
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+## 거버넌스
+<!-- 예시: 헌장은 다른 모든 관행보다 우선함; 수정 사항은 문서화, 승인, 마이그레이션 계획 필요 -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+[거버넌스_규칙]
+<!-- 예시: 모든 PR/검토는 규정 준수 확인 필수; 복잡성은 정당화되어야 함; 런타임 개발 지침은 [지침_파일] 사용 -->
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**버전**: [헌장_버전] | **비준일**: [비준_날짜] | **최종 수정일**: [최종_수정_날짜]
+<!-- 예시: 버전: 2.1.1 | 비준일: 2025-06-13 | 최종 수정일: 2025-07-16 -->
